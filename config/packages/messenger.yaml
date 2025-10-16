@@ -4,7 +4,6 @@ framework:
         transports:
             marvin.to.manager:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-                serializer: EnderLab\MarvinManagerBundle\Messenger\Serializer\ManagerSerializer
                 options:
                     exchange:
                         name: marvin.to.manager

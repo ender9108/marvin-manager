@@ -9,6 +9,11 @@
         "ext-iconv": "*",
         "doctrine/dbal": "^3.10.1",
         "doctrine/doctrine-bundle": "^2.15.1",
+        "phpstan/phpstan": "*",
+        "phpstan/phpstan-doctrine": "*",
+        "phpstan/phpstan-symfony": "*",
+        "phpstan/phpstan-webmozart-assert": "*",
+        "rector/rector": "*",
         "symfony/amqp-messenger": "7.3.*",
         "symfony/console": "7.3.*",
         "symfony/dotenv": "7.3.*",
@@ -18,7 +23,9 @@
         "symfony/monolog-bundle": "^3.10",
         "symfony/runtime": "7.3.*",
         "symfony/validator": "7.3.*",
-        "symfony/yaml": "7.3.*"
+        "symfony/yaml": "7.3.*",
+        "symplify/easy-coding-standard": "*",
+        "zenstruck/browser": "*"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.1",
@@ -75,7 +82,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "7.3.*",
             "docker": true
         }

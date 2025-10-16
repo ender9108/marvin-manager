@@ -8,9 +8,13 @@ enum ManagerActionReference: string
 {
     use EnumToArrayTrait;
 
-    case ACTION_START_DOCKER = 'action_start_docker';
-    case ACTION_RESTART_DOCKER = 'action_restart_docker';
-    case ACTION_STOP_DOCKER = 'action_stop_docker';
-    case ACTION_BUILD_DOCKER = 'action_build_docker';
-    case ACTION_EXECUTE_COMMAND_DOCKER = 'action_execute_command_docker';
+    case ACTION_START = 'start';
+    case ACTION_START_ALL = 'start_all';
+    case ACTION_RESTART = 'restart';
+    case ACTION_RESTART_ALL = 'restart_all';
+    case ACTION_STOP = 'stop';
+    case ACTION_STOP_ALL = 'stop_all';
+    case ACTION_BUILD = 'build';
+    case ACTION_BUILD_ALL = 'build_all';
+    case ACTION_EXEC_CMD = 'exec_cmd';
 }
