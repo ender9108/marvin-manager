@@ -10,8 +10,9 @@ class MarvinManagerBundle extends AbstractBundle
 {
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        // Check if we are in marvin-core or marvin-manager
-        if ($builder->hasParameter('shared.app_name') === false) {
+        $isManager = str_contains($builder->getParameter('kernel.project_dir'), 'marvin-manager');
+
+        if ($isManager) {
             if ($builder->hasParameter('env(MESSENGER_TRANSPORT_DSN)')) {
                 $builder->prependExtensionConfig('framework', [
                     'messenger' => [

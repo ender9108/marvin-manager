@@ -1,7 +1,9 @@
 framework:
     messenger:
-        failure_transport: manager.failed
+        failure_transport: failed
         transports:
+            scheduler_default:
+                dsn: 'in-memory://'
             marvin.to.manager:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 options:
@@ -13,16 +15,10 @@ framework:
                         marvin.to.manager.request:
                             binding_keys:
                                 - marvin.to.manager.request
-            manager.failed:
-                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-                options:
-                    exchange:
-                        name: manager.failed
-                    queues:
-                        manager.failed.messages: ~
-
+            failed: '%env(MESSENGER_TRANSPORT_DOCTRINE_DSN)%'
         routing:
-            EnderLab\MarvinManagerBundle\Messenger\ManagerResponseMessageInterface: marvin.to.manager
+            EnderLab\MarvinManagerBundle\Messenger\ManagerResponseCommand: marvin.to.manager
+            Symfony\Component\Scheduler\Messenger\ScheduledStamp: scheduler_default
 
 when@test:
    framework:
@@ -31,4 +27,11 @@ when@test:
                # replace with your transport name here (e.g., my_transport: 'in-memory://')
                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
                marvin.to.manager: 'in-memory://'
-               manager.failed.: 'in-memory://'
+               scheduler_default: 'in-memory://'
+               manager.failed: 'in-memory://'
+
+when@prod:
+    framework:
+        messenger:
+            transports:
+                scheduler_default: '%env(MESSENGER_TRANSPORT_DOCTRINE_DSN)%'

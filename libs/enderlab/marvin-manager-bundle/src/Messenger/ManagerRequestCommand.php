@@ -16,8 +16,13 @@ final readonly class ManagerRequestCommand implements CommandInterface
         #[NotBlank]
         #[Choice(choices: [
             ManagerActionReference::ACTION_START->value,
+            ManagerActionReference::ACTION_START_ALL->value,
             ManagerActionReference::ACTION_STOP->value,
+            ManagerActionReference::ACTION_STOP_ALL->value,
             ManagerActionReference::ACTION_RESTART->value,
+            ManagerActionReference::ACTION_RESTART_ALL->value,
+            ManagerActionReference::ACTION_BUILD->value,
+            ManagerActionReference::ACTION_BUILD_ALL->value,
             ManagerActionReference::ACTION_EXEC_CMD->value,
         ])]
         public string $action,

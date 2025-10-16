@@ -83,107 +83,74 @@ class DddCqrsBundle extends AbstractBundle
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $transportType = parse_url((string) $builder->resolveEnvPlaceholders(
-            $builder->getParameter('env(MESSENGER_TRANSPORT_DSN)'),
-            true // forcer la résolution
-        ), PHP_URL_SCHEME);
-        $optionsDomainEventTransport = [];
-        $optionsCommandTransport = [];
+        $isCore = str_contains($builder->getParameter('kernel.project_dir'), 'marvin-core');
 
-        switch ($transportType) {
-            case 'amqp':
-                $optionsDomainEventTransport = [
-                    'options' => [
-                        'exchange' => [
-                            'name' => self::DEFAULT_EXCHANGE_NAME,
-                            'type' => 'topic',
+        if ($isCore) {
+            $builder->prependExtensionConfig('framework', [
+                'messenger' => [
+                    'transports' => [
+                        'domain.event.messages' => [
+                            'dsn' => '%env(MESSENGER_TRANSPORT_DSN)%',
+                            'options' => [
+                                'exchange' => [
+                                    'name' => self::DEFAULT_EXCHANGE_NAME,
+                                    'type' => 'topic',
+                                ],
+                                'queues' => []
+                            ],
+                            'retry_strategy' => [
+                                'max_retries' => 3,
+                                'delay' => 500,
+                            ]
                         ],
-                        'queues' => []
-                    ],
-                    'retry_strategy' => [
-                        'max_retries' => 3,
-                        'delay' => 500,
-                    ]
-                ];
-                $optionsCommandTransport = [
-                    'options' => [
-                        'exchange' => [
-                            'name' => 'command.messages',
-                            'type' => 'topic',
+                        'query.messages' => 'sync://',
+                        'command.messages' => [
+                            'dsn' => '%env(MESSENGER_TRANSPORT_DSN)%',
+                            'options' => [
+                                'exchange' => [
+                                    'name' => 'command.messages',
+                                    'type' => 'topic',
+                                ],
+                                'queues' => ['command' => []]
+                            ],
+                            'retry_strategy' => [
+                                'max_retries' => 3,
+                                'delay' => 500,
+                            ]
                         ],
-                        'queues' => ['command' => []]
+                        'sync.command.messages' => 'sync://'
                     ],
-                    'retry_strategy' => [
-                        'max_retries' => 3,
-                        'delay' => 500,
+                    'default_bus' => 'command',
+                    'buses' => [
+                        'command' => [
+                            'middleware' => [
+                                'messenger.middleware.doctrine_transaction',
+                                'messenger.middleware.validation',
+                            ]
+                        ],
+                        'sync.command' => [
+                            'middleware' => [
+                                'messenger.middleware.doctrine_transaction',
+                                'messenger.middleware.validation',
+                            ]
+                        ],
+                        'query' => [],
+                        'domain.event' => [
+                            'default_middleware' => 'allow_no_handlers',
+                            'middleware' => [
+                                'EnderLab\\DddCqrsBundle\\Infrastructure\\Framework\\Symfony\\Messenger\\Middleware\\DomainEventRoutingMiddleware',
+                                'messenger.middleware.validation'
+                            ]
+                        ],
+                    ],
+                    'routing' => [
+                        'EnderLab\\DddCqrsBundle\\Application\\Query\\QueryInterface' => 'query.messages',
+                        'EnderLab\\DddCqrsBundle\\Application\\Command\\CommandInterface' => 'command.messages',
+                        'EnderLab\\DddCqrsBundle\\Application\\Command\\SyncCommandInterface' => 'sync.command.messages',
+                        'EnderLab\\DddCqrsBundle\\Domain\\Event\\DomainEventInterface' => 'domain.event.messages',
                     ]
-                ];
-                break;
-            case 'doctrine':
-                /** @todo create custom transport with multiple queues */
-                $optionsDomainEventTransport = [
-                    'options' => [],
-                    'retry_strategy' => [
-                        'max_retries' => 3,
-                        'delay' => 500,
-                    ]
-                ];
-                $optionsCommandTransport = [
-                    'options' => ['queue_name' => 'command'],
-                    'retry_strategy' => [
-                        'max_retries' => 3,
-                        'delay' => 500,
-                    ]
-                ];
-                break;
-        }
-
-        $builder->prependExtensionConfig('framework', [
-            'messenger' => [
-                'transports' => [
-                    'domain.event.messages' => [
-                        'dsn' => '%env(MESSENGER_TRANSPORT_DSN)%',
-                        'options' => $optionsDomainEventTransport['options'],
-                        'retry_strategy' => $optionsDomainEventTransport['retry_strategy']
-                    ],
-                    'query.messages' => 'sync://',
-                    'command.messages' => [
-                        'dsn' => '%env(MESSENGER_TRANSPORT_DSN)%',
-                        'options' => $optionsCommandTransport['options'],
-                        'retry_strategy' => $optionsCommandTransport['retry_strategy']
-                    ],
-                    'sync.command.messages' => 'sync://'
-                ],
-                'default_bus' => 'command',
-                'buses' => [
-                    'command' => [
-                        'middleware' => [
-                            'messenger.middleware.doctrine_transaction',
-                            'messenger.middleware.validation',
-                        ]
-                    ],
-                    'sync.command' => [
-                        'middleware' => [
-                            'messenger.middleware.doctrine_transaction',
-                            'messenger.middleware.validation',
-                        ]
-                    ],
-                    'query' => [],
-                    'domain.event' => [
-                        'default_middleware' => 'allow_no_handlers',
-                        'middleware' => [
-                            'EnderLab\\DddCqrsBundle\\Infrastructure\\Framework\\Symfony\\Messenger\\Middleware\\DomainEventRoutingMiddleware',
-                            'messenger.middleware.validation'
-                        ]
-                    ],
-                ],
-                'routing' => [
-                    'EnderLab\\DddCqrsBundle\\Application\\Query\\QueryInterface' => 'query.messages',
-                    'EnderLab\\DddCqrsBundle\\Application\\Command\\CommandInterface' => 'command.messages',
-                    'EnderLab\\DddCqrsBundle\\Application\\Command\\SyncCommandInterface' => 'sync.command.messages',
-                    'EnderLab\\DddCqrsBundle\\Domain\\Event\\DomainEventInterface' => 'domain.event.messages',
                 ]
-            ]
-        ]);
+            ]);
+        }
     }
 }
