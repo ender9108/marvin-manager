@@ -4,7 +4,7 @@ namespace MarvinManager\Dto;
 
 use DateTimeInterface;
 
-final readonly class ContainerDto
+final readonly class Container
 {
     public function __construct(
         public string $id,

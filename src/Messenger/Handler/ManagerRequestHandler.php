@@ -15,6 +15,14 @@ final readonly class ManagerRequestHandler
     }
 
     public function __invoke(ManagerRequestCommand $request): void {
-        $this->containerService->processRequestAction($request);
+        $response = null;
+
+        try {
+            $this->containerService->processRequestAction($request);
+        } catch (\Throwable $e) {
+
+        } finally {
+
+        }
     }
 }

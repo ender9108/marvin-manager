@@ -20,9 +20,9 @@ final readonly class WorkerRepository
         return $this
             ->connection
             ->createQueryBuilder()
-            ->select('*')
-            ->from('system_container')
-            ->where('id = :id')
+            ->select('w.*')
+            ->from('system_worker', 'w')
+            ->where('w.id = :id')
             ->setParameter('id', $id)
             ->fetchAllAssociative()
         ;

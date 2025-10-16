@@ -20,9 +20,9 @@ final readonly class ContainerRepository
         return $this
             ->connection
             ->createQueryBuilder()
-            ->select('*')
-            ->from('system_container')
-            ->where('id = :id')
+            ->select('c.*')
+            ->from('system_container', 'c')
+            ->where('c.id = :id')
             ->setParameter('id', $id)
             ->fetchAllAssociative()
         ;

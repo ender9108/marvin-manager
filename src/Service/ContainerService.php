@@ -8,12 +8,12 @@ use EnderLab\MarvinManagerBundle\Reference\ManagerActionReference;
 final readonly class ContainerService
 {
     public function __construct(
-
+        public array $errors = [],
     ) {
     }
 
-    public function processRequestAction(ManagerRequestCommand $request): void {
-        match($request->action) {
+    public function processRequestAction(ManagerRequestCommand $request): bool {
+        return match($request->action) {
             ManagerActionReference::ACTION_START->value => $this->processStartRequest($request),
             ManagerActionReference::ACTION_RESTART->value => $this->processRestartRequest($request),
             ManagerActionReference::ACTION_STOP->value => $this->processStopRequest($request),
@@ -22,23 +22,23 @@ final readonly class ContainerService
         };
     }
 
-    public function processStartRequest(ManagerRequestCommand $request): void {
+    public function processStartRequest(ManagerRequestCommand $request): bool {
 
     }
 
-    public function processRestartRequest(ManagerRequestCommand $request): void {
+    public function processRestartRequest(ManagerRequestCommand $request): bool {
 
     }
 
-    public function processStopRequest(ManagerRequestCommand $request): void {
+    public function processStopRequest(ManagerRequestCommand $request): bool {
 
     }
 
-    public function processBuildRequest(ManagerRequestCommand $request): void {
+    public function processBuildRequest(ManagerRequestCommand $request): bool {
 
     }
 
-    public function processExecCmdRequest(ManagerRequestCommand $request): void {
+    public function processExecCmdRequest(ManagerRequestCommand $request): bool {
 
     }
 }
