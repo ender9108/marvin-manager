@@ -1,0 +1,29 @@
+<?php
+namespace EnderLab\MarvinManagerBundle\Messenger;
+
+use EnderLab\DddCqrsBundle\Application\Command\CommandInterface;
+use EnderLab\MarvinManagerBundle\Reference\ManagerActionReference;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+final readonly class ManagerRequestCommand implements CommandInterface
+{
+    public function __construct(
+        #[NotBlank]
+        public string $containerId,
+        #[NotBlank]
+        public string $correlationId,
+        #[NotBlank]
+        #[Choice(choices: [
+            ManagerActionReference::ACTION_START_DOCKER->value,
+            ManagerActionReference::ACTION_STOP_DOCKER->value,
+            ManagerActionReference::ACTION_RESTART_DOCKER->value,
+            ManagerActionReference::ACTION_EXECUTE_COMMAND_DOCKER->value,
+        ])]
+        public string $action,
+        public ?string $command = null,
+        public array $args = [],
+        public int $timeout = 10,
+    ) {
+    }
+}

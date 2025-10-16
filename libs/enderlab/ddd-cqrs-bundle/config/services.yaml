@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    
+    EnderLab\DddCqrsBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/Infrastructure/Framework/Symfony/DependencyInjection/*'
+            - '../src/Domain/Model/*'
+            - '../src/Domain/ValueObject/*'

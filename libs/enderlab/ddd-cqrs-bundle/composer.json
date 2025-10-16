@@ -1,0 +1,21 @@
+{
+    "name": "enderlab/ddd-cqrs-bundle",
+    "description": "",
+    "type": "symfony-bundle",
+    "licence": "MIT",
+    "version": "1.0.1",
+    "require": {
+        "php": ">=8.4",
+        "enderlab/tools-bundle": "1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "EnderLab\\DddCqrsBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EnderLab\\DddCqrsBundle\\Tests\\": "tests/"
+        }
+    }
+}

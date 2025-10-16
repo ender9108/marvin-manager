@@ -1,0 +1,21 @@
+{
+    "name": "enderlab/marvin-manager-bundle",
+    "description": "",
+    "type": "symfony-bundle",
+    "licence": "MIT",
+    "version": "1.0.4",
+    "require": {
+        "enderlab/ddd-cqrs-bundle": "1.*",
+        "enderlab/tools-bundle": "1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "EnderLab\\MarvinManagerBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EnderLab\\MarvinManagerBundle\\Tests\\": "tests/"
+        }
+    }
+}
